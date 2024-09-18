@@ -6,7 +6,9 @@ let certificateData = {
     skills: ["HTML", "CSS", "JavaScript", "Python"],
     extraOptions: ["Opción 1", "Opción 2", "Opción 3"],
     certificateLink: "https://example.com/certificate/12345"
-};const server = "http://127.0.0.1:5000";
+};
+
+const server = "https://artekaimogo-production.up.railway.app";
 
 async function sendEmail() {
     const email = document.getElementById('emailInput').value;
