@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certify Artek</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="icon" href="LogoArtek.png" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee+Hairline&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Bruno Ace SC", cursive;
+        background-color: #08090a;
+        color: #bbbec6;
+        height: 100%;
+        overflow: hidden;
+      }
+      #video-background {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        opacity: 0.3;
+      }
+      header {
+        background-color: rgba(4, 42, 43);
+        padding: 1px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .container {
+        display: flex;
+        min-height: calc(100vh - 100px);
+        position: relative;
+        z-index: 1;
+      }
+      .left-third {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex: 1;
+        background-color: rgba(36, 147, 212, 0);
+      }
+      .right-two-thirds {
+        flex: 2;
+        padding: 20px;
+        background-color: rgba(8, 9, 10, 0);
+      }
+      .company-name {
+        font-size: 2em;
+        margin-top: 50px;
+        text-align: center;
+      }
+      input,
+      button {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+      }
+      input {
+        background-color: #68696e;
+        color: #bbbec6;
+      }
+      button {
+        background-color: #2493d4;
+        color: #08090a;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #4bc6ff;
+      }
+      #skillsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .skill-bubble {
+        background-color: #042a2b;
+        color: #4bc6ff;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+      }
+      #qrCode {
+        margin-top: 20px;
+      }
+      #commentBox {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: rgba(104, 105, 110, 0.2);
+        border-radius: 5px;
+      }
+      .glow {
+        text-shadow: 0 0 10px #4bc6ff, 0 0 20px #4bc6ff, 0 0 30px #4bc6ff;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+      .bungee-hairline-regular.glow {
+        font-weight: 100;
+        color: #fdfffe;
+        margin-right: 20px;
+        text-shadow: 0 0 1px #4bc6ff, 0 0 10px #4bc6ff, 0 0 15px #00ffff,
+          0 0 5px #00ffff; 
+      }
+    </style>
+  </head>
+  <body>
+    <video autoplay muted loop id="video-background">
+      <source src="Background.mp4" type="video/mp4" />
+    </video>
+    <header
+      style="display: flex; align-items: center; justify-content: flex-end"
+    >
+      <h2
+        class="bungee-hairline-regular glow"
+      >
+        Bienvenido a la plataforma de certificación de Artek.
+      </h2>
+      <input
+        type="email"
+        id="emailInput"
+        placeholder="Ingresa tu correo"
+        style="margin-right: 10px"
+      />
+      <button id="submitEmail" class="pulse">Buscar certificación</button>
+    </header>
+
+    <div class="container">
+      <div class="left-third">
+        <img
+          src="frontLogo.png"
+          alt="Logo"
+          style="display: block; margin: 0 auto; width: 80%; height: auto"
+        />
+      </div>
+      <div class="right-two-thirds">
+        <p class="bruno-ace-sc-regular glow" id="certificateName">
+          Certificado de NNNNNNNNN
+        </p>
+        <p class="bruno-ace-sc-regular" id="studentProfile">
+          Descripción del perfil del estudiante.
+        </p>
+
+        <div id="skillsContainer">
+          <!-- Las burbujas de habilidades se agregarán dinámicamente desde JS -->
+        </div>
+
+        <div id="extraOptions">
+          <!-- Las opciones adicionales se agregarán dinámicamente desde JS -->
+        </div>
+
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            bottom: 20px;
+            right: 20px;
+          "
+        >
+          <button id="getCertificateLink" class="pulse">
+            Obtener enlace del certificado
+          </button>
+          <div id="qrCode" style="margin-left: 10px">
+            <!-- Aquí se generará el código QR con el logo -->
+          </div>
+        </div>
+
+        <div id="commentBox"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
