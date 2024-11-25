@@ -1,112 +1,105 @@
-///////////////////////////////////
-// Simulated backend data
-let certificateData = {
-    name: "NNNNNNNNN",
-    profile: "Descripción detallada del perfil del estudiante...",
-    skills: ["HTML", "CSS", "JavaScript", "Python"],
-    extraOptions: ["Opción 1", "Opción 2", "Opción 3"],
-    certificateLink: "https://example.com/certificate/12345"
-};
+// Actualizar la función que carga los cursos
+function cargarCertificado(datos) {
+    // ... código existente para nombre, título y descripción ...
 
-const server = "https://artekaimogo-production.up.railway.app";
+    // Actualizar la carga de habilidades
+    const habilidadesList = document.getElementById('habilidades');
+    habilidadesList.innerHTML = '';
+    datos.habilidades.forEach((habilidad, index) => {
+        setTimeout(() => {
+            const li = document.createElement('li');
+            li.textContent = habilidad;
+            li.style.opacity = '0';
+            habilidadesList.appendChild(li);
+            fadeIn(li);
+        }, index * 100 + 600);
+    });
 
-async function sendEmail() {
-    const email = document.getElementById('emailInput').value;
-    if (email == null || email == "") {
-        alert("Correo vacío, por favor ingresa un correo");
-        return;
+    // Actualizar la carga de cursos con el nuevo popup
+    const cursosList = document.getElementById('cursos');
+    cursosList.innerHTML = '';
+    datos.cursos.forEach((curso, index) => {
+        setTimeout(() => {
+            const li = document.createElement('li');
+            li.textContent = curso.nombre;
+            li.style.opacity = '0';
+            li.addEventListener('click', () => mostrarPopupCurso(curso));
+            cursosList.appendChild(li);
+            fadeIn(li);
+        }, index * 100 + 1000);
+    });
+}
+
+// Función para mostrar el popup del curso
+function mostrarPopupCurso(curso) {
+    // Crear el popup si no existe
+    let popup = document.querySelector('.course-popup');
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.className = 'course-popup';
+        document.body.appendChild(popup);
     }
-    if (!email.includes('@')) {
-        alert("Formato de correo no válido");
-        return;
-    }
 
-    try {
-        const response = await fetch(server + '/api/GetCertify', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email }), 
-        });
+    // Actualizar el contenido del popup
+    popup.innerHTML = `
+        <div class="popup-content">
+            <button class="popup-close">&times;</button>
+            <div class="popup-header">
+                <h2 class="popup-title">${curso.nombre}</h2>
+            </div>
+            <div class="popup-overview">
+                ${curso.descripcion}
+            </div>
+            <div class="popup-tags">
+                ${curso.tags ? curso.tags.map(tag => `<span class="popup-tag">${tag}</span>`).join('') : ''}
+            </div>
+            <a href="#" class="popup-certificate">Ver certificado →</a>
+        </div>
+    `;
 
-        if (response.ok) {
-            const data = await response.json();
-            
-            // Actualizar datos del certificado
-            updateCertificateData(data);
-        } else {
-            alert('Error: ' + "Correo no existe");
+    // Mostrar el popup con animación
+    popup.style.display = 'flex';
+    popup.style.opacity = '0';
+    setTimeout(() => {
+        popup.style.opacity = '1';
+        popup.style.transition = 'opacity 0.3s ease';
+    }, 10);
+
+    // Agregar evento para cerrar el popup
+    const closeBtn = popup.querySelector('.popup-close');
+    closeBtn.addEventListener('click', () => {
+        popup.style.opacity = '0';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 300);
+    });
+
+    // Cerrar el popup al hacer clic fuera del contenido
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+            closeBtn.click();
         }
-    } catch (error) {
-        console.error('Hubo un problema con la solicitud:', error);
-    }
+    });
 }
 
-function updateCertificateData(data) {
-    // Actualizar nombre del certificado y perfil
-    document.getElementById('certificateName').textContent = `Certificado de ${data.name}`;
-    document.getElementById('studentProfile').textContent = data.resume;
-
-    // Actualizar las habilidades
-    const skillsContainer = document.getElementById("skillsContainer");
-    skillsContainer.innerHTML = ""; // Limpiar las habilidades previas
-    data.skills.forEach(skill => {
-        const skillBubble = document.createElement("div");
-        skillBubble.className = "skill-bubble";
-        skillBubble.textContent = skill;
-
-        const commentBox = document.createElement("div");
-        commentBox.className = "commentBox";
-        commentBox.style.display = "none";
-        skillBubble.appendChild(commentBox);
-
-        skillBubble.addEventListener("mouseover", function() {
-            commentBox.textContent = `Información sobre ${skill}`;
-            commentBox.style.display = "block";
-        });
-
-        skillBubble.addEventListener("mouseout", function() {
-            commentBox.style.display = "none";
-        });
-
-        skillsContainer.appendChild(skillBubble);
-    });
-
-    // Actualizar opciones adicionales (extraOptions)
-    const extraOptionsContainer = document.getElementById("extraOptions");
-    extraOptionsContainer.innerHTML = ""; // Limpiar opciones previas
-    data.extraOptions.forEach(option => {
-        const optionElement = document.createElement("p");
-        optionElement.textContent = option;
-        extraOptionsContainer.appendChild(optionElement);
-    });
-
-    // Actualizar el enlace del certificado
-    certificateData.certificateLink = data.certificateLink;
-}
-
-// Escuchadores de eventos
-document.getElementById('submitEmail').addEventListener('click', sendEmail);
-document.getElementById('emailInput').addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        sendEmail();
-    }
-});
-
-window.onload = function() {
-    const qrCodeContainer = document.getElementById("qrCode");
-    new QRCode(qrCodeContainer, {
-        text: "aun no disponible :/ ",
-        width: 128,
-        height: 128,
-        colorDark : "#ffffff",
-        colorLight : "#191919",
-        correctLevel : QRCode.CorrectLevel.L
-    });
+// Actualizar los datos de ejemplo para incluir tags
+const certificadoEjemplo = {
+    // ... datos existentes ...
+    cursos: [
+        {
+            nombre: "Introducción al Desarrollo Web",
+            descripcion: "Fundamentos de HTML, CSS y JavaScript.",
+            tags: ["Frontend", "Básico", "Web"]
+        },
+        {
+            nombre: "React Avanzado",
+            descripcion: "Desarrollo de aplicaciones complejas con React y Redux.",
+            tags: ["Frontend", "Avanzado", "React", "Redux"]
+        },
+        {
+            nombre: "Backend con Node.js",
+            descripcion: "Creación de APIs RESTful y manejo de bases de datos.",
+            tags: ["Backend", "Intermedio", "Node.js", "API"]
+        }
+    ]
 };
-
-document.getElementById('getCertificateLink').addEventListener('click', function() {
-    const certificateLink = certificateData.certificateLink;
-    alert("funcion en desarrollo :/");
-});
